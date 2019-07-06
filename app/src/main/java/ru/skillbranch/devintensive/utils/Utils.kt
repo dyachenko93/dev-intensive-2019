@@ -16,8 +16,62 @@ object Utils {
         return firstName to lastName
     }
 
+    val transliterationMap: HashMap<String, String> = hashMapOf(
+        "а" to "a",
+        "б" to "b",
+        "в" to "v",
+        "г" to "g",
+        "д" to "d",
+        "е" to "e",
+        "ё" to "e",
+        "ж" to "zh",
+        "з" to "z",
+        "и" to "i",
+        "й" to "i",
+        "к" to "k",
+        "л" to "l",
+        "м" to "m",
+        "н" to "n",
+        "о" to "o",
+        "п" to "p",
+        "р" to "r",
+        "с" to "s",
+        "т" to "t",
+        "у" to "u",
+        "ф" to "f",
+        "х" to "h",
+        "ц" to "c",
+        "ч" to "ch",
+        "ш" to "sh",
+        "щ" to "sh'",
+        "ъ" to "",
+        "ы" to "i",
+        "ь" to "",
+        "э" to "e",
+        "ю" to "yu",
+        "я" to "ya"
+    )
+
     fun transliteration(payload : String, divider : String = " "): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var res = ""
+        for (i in 0..payload.length-1) {
+            when {
+                payload.get(i).toString() in transliterationMap.keys ->
+                    res += transliterationMap.get(payload.get(i).toString())
+                payload.get(i).toString().toLowerCase() in transliterationMap -> {
+                    val temp = transliterationMap.get(payload.get(i).toString().toLowerCase())
+                    res += temp?.get(0)?.toUpperCase()
+                    if (temp?.length!! > 1) {
+                        res += temp.substring(1)
+                    }
+                }
+                payload.get(i).toString() == " " ->
+                    res += divider
+                else ->
+                    res += payload.get(i)
+            }
+        }
+        return res
     }
 
     fun initials(firstName: String?, lastName: String?): String? {
