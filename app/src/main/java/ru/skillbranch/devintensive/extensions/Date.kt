@@ -27,8 +27,105 @@ fun Date.add(value:Int, units: TimeUnits = TimeUnits.SECOND):Date {
 }
 
 public fun Date.humanizeDiff(date: Date = Date()): String {
-//    TODO("not implemented") //to change body of created funnctions use File | settings | File TEmplates.
-    return date.toString()
+    when (this) {
+        in Date().add(-1, TimeUnits.SECOND)..Date() -> return "только что"
+        in Date().add(-45, TimeUnits.SECOND)..Date() -> return "несколько секунд назад"
+        in Date()..Date().add(45, TimeUnits.SECOND) -> return "через несколько секунд"
+        in Date().add(-75, TimeUnits.SECOND)..Date() -> return "минуту назад"
+        in Date()..Date().add(75, TimeUnits.SECOND) -> return "через минуту"
+        in Date().add(-45, TimeUnits.MINUTE)..Date() -> {
+            val diff: Long = Math.round((Date().time - this.time) / (60 * 1000.0))
+            when(diff % 10) {
+                1L -> {
+                    when {
+                        diff != 11L -> return "$diff минуту назад"
+                    }
+                }
+                in 2..4 -> {
+                    when(diff) {
+                        !in 11..14 -> return "$diff минуты назад"
+                    }
+                }
+            }
+            return "$diff минут назад"
+        }
+        in Date()..Date().add(45, TimeUnits.MINUTE) -> {
+            val diff: Long = Math.round((this.time - Date().time) / (60 * 1000.0))
+            when(diff % 10) {
+                1L -> {
+                    when {
+                        diff != 11L -> return "через $diff минуту"
+                    }
+                }
+                in 2..4 -> {
+                    when(diff) {
+                        !in 11..13 -> return "через $diff минуты"
+                    }
+                }
+            }
+            return "через $diff минут"
+        }
+        in Date().add(-75, TimeUnits.MINUTE)..Date() -> return "час назад"
+        in Date()..Date().add(75, TimeUnits.MINUTE) -> return "через час"
+        in Date().add(-22, TimeUnits.HOUR)..Date() -> {
+            val diff: Long = Math.round((Date().time - this.time) / (60 * 60 * 1000.0))
+            when(diff) {
+                in listOf(2L, 3L, 4L, 22L) -> return "$diff часа назад"
+                in listOf(1L,21L) -> return "$diff час назад"
+                else -> return "$diff часов назад"
+            }
+        }
+        in Date()..Date().add(22, TimeUnits.HOUR) -> {
+            val diff: Long = Math.round((this.time - Date().time) / (60 * 60 * 1000.0))
+            when(diff) {
+                in listOf(2L, 3L, 4L, 22L) -> return "через $diff часа"
+                in listOf(1L,21L) -> return "через $diff час"
+                else -> return "через $diff часов"
+            }
+        }
+        in Date().add(26, TimeUnits.HOUR)..Date() -> return "день назад"
+        in Date()..Date().add(26, TimeUnits.HOUR) -> return "через день"
+        in Date().add(-360, TimeUnits.DAY)..Date() -> {
+            val diff: Long = Math.round((Date().time - this.time) / (24 * 60 * 60 * 1000.0))
+            when(diff % 10) {
+                1L -> {
+                    when {
+                        diff != 11L -> return "$diff день назад"
+                    }
+                }
+                in 2..4 -> {
+                    when(diff) {
+                        !in 11..14 -> return "$diff дня назад"
+                    }
+                }
+            }
+            return "$diff дней назад"
+        }
+        in Date()..Date().add(360, TimeUnits.DAY) -> {
+            val diff: Long = Math.round(((this.time - Date().time) / (24 * 60 * 60 * 1000.0)))
+            when(diff % 10) {
+                1L -> {
+                    when {
+                        diff != 11L -> return "через $diff день"
+                    }
+                }
+                in 2..4 -> {
+                    when(diff) {
+                        !in 11..13 -> return "через $diff дня"
+                    }
+                }
+            }
+            return "через $diff дней"
+        }
+        else -> {
+            when {
+                this < Date() -> return "больее года назад"
+                else -> return "более чем через год"
+            }
+        }
+    }
+
+    return this.toString()
 }
 
 enum class TimeUnits {
