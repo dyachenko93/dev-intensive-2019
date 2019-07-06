@@ -21,6 +21,18 @@ object Utils {
     }
 
     fun initials(firstName: String?, lastName: String?): String? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var res = ""
+        val fN: Char? = firstName?.trim()?.getOrNull(0)
+        val lN: Char? = lastName?.trim()?.getOrNull(0)
+        when(fN) {
+            is Char -> res = fN.toUpperCase().toString()
+        }
+        when(lN) {
+            is Char -> res += lN.toUpperCase()
+        }
+        when(res) {
+            "" -> return null
+            else -> return res
+        }
     }
 }
