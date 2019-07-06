@@ -8,3 +8,26 @@ fun String.truncate(size: Int = 16): String {
     }
     return res
 }
+
+fun String.stripHtml(): String {
+    var res: String
+    res = ""
+    var i = 0
+    while(i < this.length) {
+        if(this.get(i).equals('<')) {
+            do {
+                i++
+            } while (this.get(i) != '>')
+            i++
+        } else if(this.get(i).equals(' ')) {
+            while(this.get(i) == ' ') {
+                i++
+            }
+            res += ' '
+        } else {
+            res += this.get(i)
+            i++
+        }
+    }
+    return res
+}
