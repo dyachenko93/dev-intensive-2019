@@ -119,7 +119,7 @@ public fun Date.humanizeDiff(date: Date = Date()): String {
         }
         else -> {
             when {
-                this < Date() -> return "больее года назад"
+                this < Date() -> return "более года назад"
                 else -> return "более чем через год"
             }
         }
