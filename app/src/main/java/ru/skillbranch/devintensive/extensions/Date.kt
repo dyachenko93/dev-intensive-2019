@@ -124,13 +124,63 @@ public fun Date.humanizeDiff(date: Date = Date()): String {
             }
         }
     }
-
-    return this.toString()
 }
 
 enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+
+    fun plural(i: Int): String {
+        var res = "$i "
+        when(this) {
+            SECOND -> {
+                when(getPeriod(i)) {
+                    0 -> res += "секунд"
+                    1 -> res += "секунду"
+                    2 -> res += "секунды"
+                }
+            }
+            MINUTE -> {
+                when(getPeriod(i)) {
+                    0 -> res += "минут"
+                    1 -> res += "минуту"
+                    2 -> res += "минуты"
+                }
+            }
+            HOUR -> {
+                when(getPeriod(i)) {
+                    0 -> res += "часов"
+                    1 -> res += "час"
+                    2 -> res += "часа"
+                }
+            }
+            DAY -> {
+                when(getPeriod(i)) {
+                    0 -> res += "дней"
+                    1 -> res += "день"
+                    2 -> res += "дня"
+                }
+            }
+        }
+        return res
+    }
+
+    fun getPeriod(i: Int): Int {
+        var res = 0
+        when(i % 10) {
+            1 -> {
+                if (i % 100 != 11) {
+                    res = 1
+                }
+            }
+            in 2..4 -> {
+                if(i % 100 !in 12..14) {
+                    res = 2
+                }
+            }
+        }
+        return res
+    }
 }
