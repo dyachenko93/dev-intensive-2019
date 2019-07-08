@@ -74,7 +74,7 @@ object Utils {
         return res
     }
 
-    fun initials(firstName: String?, lastName: String?): String? {
+    fun toInitials(firstName: String?, lastName: String?): String? {
         var res = ""
         val fN: Char? = firstName?.trim()?.getOrNull(0)
         val lN: Char? = lastName?.trim()?.getOrNull(0)
