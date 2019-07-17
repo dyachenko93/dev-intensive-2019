@@ -17,7 +17,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 //            if (question == Question.IDLE) {
 //                Action.hideKeyboard()
 //            }
-            "Отлично - это правильный ответ!\n${question.question}" to status.color
+            "Отлично - ты справился\n${question.question}" to status.color
         } else {
             status = status.nextStatus()
             if(status == Status.NORMAL) {
