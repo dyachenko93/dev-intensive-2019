@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import java.lang.Double.parseDouble
+
 class Bender(var status: Status = Status.NORMAL, var question: Question = Question.NAME) {
 
     fun askQuestion():String = when (question) {
@@ -12,7 +14,40 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     }
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
-        return if(question.answers.contains(answer)) {
+        when(question) {
+            Question.NAME -> {
+                if (!answer.equals(answer.capitalize()))
+                    return "Имя должно начинаться с заглавной буквы\n${question.question}" to status.color
+            }
+            Question.PROFESSION -> {
+                if (answer != answer.decapitalize())
+                    return "Профессия должна начинаться со строчной буквы\n${question.question}" to status.color
+            }
+            Question.MATERIAL -> {
+                if (Regex("""\d+""").containsMatchIn(answer))
+                    return "Материал не должен содержать цифр\n${question.question}" to status.color
+            }
+            Question.BDAY -> {
+                try {
+                    val num = parseDouble(answer)
+                } catch (e: NumberFormatException) {
+                    return "Год моего рождения должен содержать только цифры\n${question.question}" to status.color
+                }
+            }
+            Question.SERIAL -> {
+                if (answer.length == 7) {
+                    try {
+                        val num = parseDouble(answer)
+                    } catch (e: NumberFormatException) {
+                        return "Серийный номер содержит только цифры, и их 7\n${question.question}" to status.color
+                    }
+                } else {
+                    return "Серийный номер содержит только цифры, и их 7\n${question.question}" to status.color
+                }
+            }
+        }
+        val new_answer = answer.toLowerCase();
+        return if(question.answers.contains(new_answer)) {
             question = question.nextQuestion()
 //            if (question == Question.IDLE) {
 //                Action.hideKeyboard()
