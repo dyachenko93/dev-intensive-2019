@@ -29,7 +29,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             }
             Question.BDAY -> {
                 try {
-                    val num = parseDouble(answer)
+                    parseDouble(answer)
                 } catch (e: NumberFormatException) {
                     return "Год моего рождения должен содержать только цифры\n${question.question}" to status.color
                 }
@@ -37,7 +37,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             Question.SERIAL -> {
                 if (answer.length == 7) {
                     try {
-                        val num = parseDouble(answer)
+                        parseDouble(answer)
                     } catch (e: NumberFormatException) {
                         return "Серийный номер содержит только цифры, и их 7\n${question.question}" to status.color
                     }
@@ -46,12 +46,9 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
                 }
             }
         }
-        val new_answer = answer.toLowerCase();
+        val new_answer = answer.toLowerCase()
         return if(question.answers.contains(new_answer)) {
             question = question.nextQuestion()
-//            if (question == Question.IDLE) {
-//                Action.hideKeyboard()
-//            }
             "Отлично - ты справился\n${question.question}" to status.color
         } else {
             status = status.nextStatus()

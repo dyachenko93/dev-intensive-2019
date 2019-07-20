@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.devintensive.extensions.hideKeyboard
+import ru.skillbranch.devintensive.extensions.isKeyboardClosed
+import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -100,6 +103,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun checkAnswer() {
+        if(this.isKeyboardOpen()) {
+            Log.d("M_MainActivity", "keyboard is open")
+            this.hideKeyboard()
+        } else if(this.isKeyboardClosed()) {
+            Log.d("M_MainActivity", "keyboard is closed")
+        }
         val(phrase, color) = benderObj.listenAnswer(messageEt.text.toString())
         messageEt.setText("")
         val(r,g,b) = color
