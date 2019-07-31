@@ -4,6 +4,8 @@ import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -29,6 +31,8 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //TODO set custom Theme this before super and setCurrentView
+//        setContentView(R.layout.splash_theme)
+//        Log.d("M_ProfileActivity", "before onCreate")
 
 
 
@@ -81,7 +85,11 @@ class ProfileActivity : AppCompatActivity() {
         showCurrentMode(isEditMode)
 
         btn_edit.setOnClickListener {
-            if (isEditMode) saveProfileInfo()
+            if (isEditMode) {
+                if(!isValidRepo(viewFields["repository"]?.text.toString()))
+                    et_repository.text.clear()
+                saveProfileInfo()
+            }
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
         }
@@ -89,6 +97,34 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.switchTheme()
         }
+
+        et_repository.onChange { if (isEditMode) isValidRepo(it) }
+    }
+
+    private fun isValidRepo(et_repo: String): Boolean {
+        val exceptions = arrayListOf<String>("enterprise", "features", "topics", "collections", "trending", "events",
+            "marketplace", "pricing", "nonprofit", "customer-stories", "security", "login", "join")
+        if(et_repo != "") {
+            if (!(et_repo.startsWith("https://github.com/") ||
+                        et_repo.startsWith("https://www.github.com/") ||
+                        et_repo.startsWith("www.github.com/") ||
+                        et_repo.startsWith("github.com/"))) {
+                wr_repository.error = "Невалидный адрес репозитория"
+                return false
+            }
+            val userProfile = et_repo.substring(et_repo.indexOf("github.com/") + 11)
+            if (userProfile.contains("/") || userProfile.length == 0) {
+                wr_repository.error = "Невалидный адрес репозитория"
+                return false
+            }
+            if (exceptions.contains(userProfile)) {
+                wr_repository.error = "Невалидный адрес репозитория"
+                return false
+            }
+        }
+        wr_repository.error = ""
+        return true
+
     }
 
     private fun showCurrentMode(isEdit: Boolean) {
@@ -136,6 +172,14 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+}
+
+fun EditText.onChange(cb: (String) -> Unit) {
+    this.addTextChangedListener(object: TextWatcher {
+        override fun afterTextChanged(s: Editable?) { cb(s.toString()) }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    })
 }
 
 
