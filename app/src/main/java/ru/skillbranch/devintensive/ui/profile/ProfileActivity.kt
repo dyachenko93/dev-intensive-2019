@@ -100,23 +100,10 @@ class ProfileActivity : AppCompatActivity() {
     private fun isValidRepo(et_repo: String): Boolean {
         val exceptions = arrayListOf<String>("enterprise", "features", "topics", "collections", "trending", "events",
             "marketplace", "pricing", "nonprofit", "customer-stories", "security", "login", "join")
-        if(et_repo != "") {
-            if (!(et_repo.startsWith("https://github.com/") ||
-                        et_repo.startsWith("https://www.github.com/") ||
-                        et_repo.startsWith("www.github.com/") ||
-                        et_repo.startsWith("github.com/"))) {
-                wr_repository.error = "Невалидный адрес репозитория"
-                return false
-            }
-            val userProfile = et_repo.substring(et_repo.indexOf("github.com/") + 11)
-            if (userProfile.contains("/") || userProfile.length == 0) {
-                wr_repository.error = "Невалидный адрес репозитория"
-                return false
-            }
-            if (exceptions.contains(userProfile)) {
-                wr_repository.error = "Невалидный адрес репозитория"
-                return false
-            }
+        val regex = "(https://)?(www\\.)?github\\.com/[A-Za-z_0-9.\\-]+".toRegex()
+        if (!et_repo.matches(regex) || exceptions.contains(et_repo.substringAfter("github.com/"))) {
+            wr_repository.error = "Невалидный адрес репозитория"
+            return false
         }
         wr_repository.error = ""
         return true
