@@ -7,15 +7,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.Profile
+import ru.skillbranch.devintensive.ui.custom.DrawableText
+import ru.skillbranch.devintensive.utils.Utils
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 
 class ProfileActivity : AppCompatActivity() {
@@ -24,6 +28,7 @@ class ProfileActivity : AppCompatActivity() {
         const val IS_EDIT_MODE = "IS_EDIT_MODE"
     }
 
+    private lateinit var textDrawable: DrawableText
     private lateinit var viewModel: ProfileViewModel
     var isEditMode = false
     lateinit var viewFields: Map<String, TextView>
@@ -63,6 +68,27 @@ class ProfileActivity : AppCompatActivity() {
                 v.text = it[k].toString()
             }
         }
+        initialsToAvatar()
+    }
+
+    private fun initialsToAvatar() {
+        val first_name = viewFields["firstName"]?.text.toString()
+        val last_name = viewFields["lastName"]?.text.toString()
+        val initials = Utils.toInitials(first_name, last_name)
+
+        if(initials.isNullOrBlank()) {
+            iv_avatar.setImageResource(R.drawable.avatar_default)
+        } else {
+            textDrawable.text = initials
+            iv_avatar.setImageDrawable(textDrawable)
+        }
+
+//        Log.d("M_BorderColor", iv_avatar.getBorderColor().toString())
+//        Log.d("M_BorderWidth", iv_avatar.getBorderWidth().toString())
+//        iv_avatar.setBorderWidth(25)
+//        iv_avatar.setBorderColor("blue")
+//        Log.d("M_BorderColor", iv_avatar.getBorderColor().toString())
+//        Log.d("M_BorderWidth", iv_avatar.getBorderWidth().toString())
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -77,13 +103,21 @@ class ProfileActivity : AppCompatActivity() {
             "respect" to tv_respect
         )
 
+        textDrawable = DrawableText().apply {
+            val typedValue = TypedValue()
+            theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+            backgroundColor = ContextCompat.getColor(this@ProfileActivity, typedValue.resourceId)
+        }
+
         isEditMode = savedInstanceState?.getBoolean(IS_EDIT_MODE, false) ?: false
         showCurrentMode(isEditMode)
 
         btn_edit.setOnClickListener {
             if (isEditMode) {
-                if(!isValidRepo(viewFields["repository"]?.text.toString()))
+                if(!isValidRepo(viewFields["repository"]?.text.toString())) {
                     et_repository.text.clear()
+                    wr_repository.error = ""
+                }
                 saveProfileInfo()
             }
             isEditMode = !isEditMode
@@ -100,7 +134,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun isValidRepo(et_repo: String): Boolean {
         val exceptions = arrayListOf<String>("enterprise", "features", "topics", "collections", "trending", "events",
             "marketplace", "pricing", "nonprofit", "customer-stories", "security", "login", "join")
-        val regex = "(https://)?(www\\.)?github\\.com/[A-Za-z_0-9.\\-]+".toRegex()
+        val regex = "(https://)?(www\\.)?(github\\.com/[A-Za-z_0-9.\\-]+)?".toRegex()
         if (!et_repo.matches(regex) || exceptions.contains(et_repo.substringAfter("github.com/"))) {
             wr_repository.error = "Невалидный адрес репозитория"
             return false
