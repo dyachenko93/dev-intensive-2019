@@ -15,25 +15,24 @@ data class Chat(
 ) {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun unreadableMessageCount(): Int {
+        val res = messages.filter { message -> !message.isReaded }.size
         //TODO implement me
-        return 0
+        return res
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun lastMessageDate(): Date? {
+        return messages.lastOrNull()?.date
         //TODO implement me
-        return Date()
+//        return Date()
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun lastMessageShort(): Pair<String, String?> = when(val lastMessage = messages.lastOrNull()){
        //TODO implement me
         null -> "There is no messages yet" to "@John_Doe"
-        else -> lastMessage?.textMessage() to lastMessage?.from.toString()
+        else -> lastMessage?.formatMessage() to lastMessage?.from.firstName
     }
-//    fun lastMessageShort(): Pair<String, String?> {
-//        return "There is no messages yet" to "@John_Doe"
-//    }
 
     private fun isSingle(): Boolean = members.size == 1
 

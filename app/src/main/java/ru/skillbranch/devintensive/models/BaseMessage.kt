@@ -24,6 +24,4 @@ abstract class BaseMessage(
             }
         }
     }
-
-    abstract fun textMessage() : String
 }
