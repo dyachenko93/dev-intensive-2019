@@ -343,7 +343,7 @@ object DataGenerator {
     )
 
     val stabUsers = generateUsers(20)
-    val stabChats = generateStabChats(10)
+    val stabChats = generateChats(20)
 
     private fun generateUsers(count: Int): List<User> {
         val list = mutableListOf<User>()
