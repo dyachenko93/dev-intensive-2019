@@ -3,6 +3,7 @@ package ru.skillbranch.devintensive.repositories
 import androidx.lifecycle.MutableLiveData
 import ru.skillbranch.devintensive.data.managers.CacheManager
 import ru.skillbranch.devintensive.models.data.Chat
+import ru.skillbranch.devintensive.utils.DataGenerator
 
 object ChatRepository {
     private val chats = CacheManager.loadChats()
@@ -23,4 +24,6 @@ object ChatRepository {
         val ind = chats.value!!.indexOfFirst { it.id == chatId }
         return chats.value!!.getOrNull(ind)
     }
+
+    fun loadChats1() : List<Chat> = DataGenerator.stabChats
 }
